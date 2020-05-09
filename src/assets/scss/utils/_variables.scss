@@ -1,0 +1,40 @@
+// COLORS
+$--color-white: #FFF;
+$--color-black: #060E14;
+
+$--color-neutral-1: #6E767D;
+$--color-neutral-2: #A2ACB3;
+$--color-neutral-3: #D5DCE0;
+$--color-neutral-4: #F9F9FB;
+$--color-neutral-5: #f0f0f0;
+
+$--color-success: #36B348;
+$--color-warning: #FFAB20;
+$--color-danger: #DE2F2F;
+$--color-info: #7874b4;
+
+$--color-basics-1: #0d4657;
+$--color-basics-2: #629283;
+$--color-basics-3: #be9b32;
+$--color-basics-4: #b53425;
+$--color-basics-5: #89999d;
+
+/* Break-point
+--------------------------*/
+$--sm: 768px;
+$--md: 992px;
+$--lg: 1200px;
+$--xl: 1920px;
+$--breakpoint-menu: $--md;
+
+/* Additional breakpoints
+--------------------------*/
+$--bp-mobile-sm: 321px;
+$--bp-mobile-md: 575px;
+$--bp-mobile-lg: 767px;
+$--bp-tablet-portrait: 1023px;
+$--bp-desktop-sm-height: 700px;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
