@@ -116,7 +116,7 @@ export default {
     width: 100%;
     font-weight: bold;
     a:hover {
-      -webkit-text-fill-color: $--color-basics-4;
+      -webkit-text-fill-color: $--color-basics-1;
     }
   }
   .button-login {

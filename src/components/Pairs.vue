@@ -1,7 +1,7 @@
 <template lang="pug">
     .pairs-container
          .pairs-container_title Parejas
-         .pairs-container_list
+         .pairs-container_list(v-if='this.pairs.length !== 0')
             div(v-for="pair in pairs")
                 Pair(:name="pair.name")
 </template>
@@ -41,23 +41,20 @@ export default {
 
 <style lang="scss" scoped>
 .pairs-container {
-  padding: 85px 20px 20px 20px;
+  padding: 115px 20px 20px 20px;
   height: auto;
-  width: 50%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
   &_title {
     color: white;
-    margin: 1rem;
+    margin-bottom: 1rem;
     font-size: 2.5rem;
-    width: auto;
-    text-align: center;
-    padding: 0.3rem;
   }
   &_list {
     display: flex;
     flex-wrap: wrap;
-    width: 68%;
-    border: 3px solid white;
-    border-radius: 15px;
+    width: 100%;
     border: 3px solid white;
     border-radius: 15px;
     float: right;

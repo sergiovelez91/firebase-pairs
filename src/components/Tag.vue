@@ -1,7 +1,7 @@
 .<template lang="pug">
     .tag_container
         .title {{ name }}
-        i(@click="$emit('deleteName', personId)").material-icons close
+        i(@click="$emit('deleteName')").material-icons close
         
 </template>
 <script>
@@ -12,7 +12,6 @@ export default {
   name: "Tag",
   props: {
     name: String,
-    personId: String
   },
   components: {},
   data() {
@@ -35,6 +34,9 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
+  .title {
+    font-weight: bold;
+  }
   i {
     color: white;
     cursor: pointer;

@@ -29,5 +29,8 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
+  .title {
+      font-weight: bold;
+  }
 }
 </style>

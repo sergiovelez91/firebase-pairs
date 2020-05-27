@@ -3,25 +3,85 @@ div
   .header
     div.cta-1
       button(@click="logOut").button-logout Logout
-  .home-container    
-    People
-    Pairs
+  .home-container
+    .home-container__add
+      AddPerson(@addPerson="addName" :people="people")
+      People(:people="people" ref="people" @deleteName="deletePerson")
+    .button-pairs_container
+      CustomButton(value='Hagamos parejas' @click.native='makePairs').button-pairs
 
+    Pairs.home-container__pairs
 </template>
 
 <script>
 // @ is an alias to /src
 import firebase from "firebase"
+import { db } from "../main";
 import People from '@/components/People.vue'
 import Pairs from '@/components/Pairs.vue'
+import CustomButton from '@/components/CustomButton.vue'
+import AddPerson from '@/components/AddPerson.vue'
+
 
 export default {
   name: 'Home',
   components: {
     People,
-    Pairs
+    Pairs,
+    CustomButton,
+    AddPerson
   },
+  created() {
+    this.showPeople();
+  },
+  data() {
+		return {
+      people: [],
+      pairs: [],
+      person: ""
+		};
+	},
   methods: {
+    showPeople() {
+      db.collection("people")
+        .get()
+        .then((querySnapshot) => {
+          this.people = [];
+          querySnapshot.forEach((person) => {
+            this.people.push({ name: person.data().name, id: person.id });
+          });
+        });
+    },
+    async addName(person) {
+      try {
+        if (person) {
+          console.log("addNAme")
+          let id = await db.collection("people").add({
+            name: person,
+          });
+          this.people.push({ name: person, id: id.id });
+          person = null;
+        } else {
+          alert("Se te olvidó añadir a alguien");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    deletePerson(personId) {
+      db.collection("people")
+        .doc(personId)
+        .delete()
+        .then(() => {
+          console.log(this.people);
+
+          console.log("Documento borrado");
+          this.showPeople();
+        })
+        .catch(function(error) {
+          console.error("Error al borrar el documento: ", error);
+        });
+    },
     logOut() {
       firebase
         .auth()
@@ -30,6 +90,12 @@ export default {
           this.$router.replace('login')
         })
         .catch((error) => console.error(error));
+    },
+    makePairs() {
+      console.log()
+      for(this.person of this.people) {
+        console.log("pepe")
+      }
     }
   }
 }
@@ -78,12 +144,31 @@ export default {
       100% {border-radius: 0% 0%;}
       }     
     }
-  
-
-
 }
 .home-container {
   display: flex;
-  
+  &__add {
+    width: 40%;
+  }
+}
+.button-pairs {
+  width: 100%;
+  background-color: $--color-basics-1;
+  color: white;
+  padding: 20px;
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.5);
+  &_container {
+    display: flex;
+    align-items: start;
+    width: 20%;
+    justify-content: center;
+    padding: 20px;
+   }
+  &:hover {
+    color: #0d4657;
+    background-color:white;
+    box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.3);
+  }
+
 }
 </style>
