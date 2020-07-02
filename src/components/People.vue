@@ -5,7 +5,7 @@
       span {{ this.people.length }}
   div(v-if='this.people.length !== 0').list-people
     div(v-for='person in people')
-      Tag(:name="person.name"  @deleteName="deletePerson(person.id)" ref="tag")
+      Tag(:name="person.name"  @deleteName="deletePerson(person.id)")
 </template>
 
 <script>
@@ -19,7 +19,6 @@ export default {
   name: "People",
   props: {
     people: Array,
-    
   },
   components: {
     Tag,

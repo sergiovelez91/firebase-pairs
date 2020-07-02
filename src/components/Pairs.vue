@@ -3,7 +3,7 @@
          .pairs-container_title Parejas
          .pairs-container_list(v-if='this.pairs.length !== 0')
             div(v-for="pair in pairs")
-                Pair(:name="pair.name")
+              Pair(:name="pair")
 </template>
 
 <script>
@@ -13,29 +13,20 @@ import Pair from "./Pair.vue";
 
 export default {
   name: "Pairs",
+  props: {
+    pairs: Array,
+  },
   components: {
     Pair,
   },
   data() {
     return {
-      pairs: [],
       pair: ""
     };
   },
-  created() {
-    this.showPairs();
-  },
   methods: {
-    showPairs() {
-      db.collection("pairs")
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((pair) => {
-            this.pairs.push({ name: pair.data().name, id: pair.id });
-          });
-        });
-    },
-  },
+    
+  }
 };
 </script>
 

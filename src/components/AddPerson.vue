@@ -1,7 +1,7 @@
 <template lang="pug">
 	.add-container
 		.add-container__form-wrap
-			input(v-model="person" @keyup.enter="$emit('addPerson', person)" placeholder="Añade un nombre")
+			input(v-model="person" @keyup.enter="addPerson" placeholder="Añade un nombre")
 			CustomButton(value='Añadir' @click.native="addPerson").button_save
 </template>
 

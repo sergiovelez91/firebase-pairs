@@ -6,11 +6,11 @@ div
   .home-container
     .home-container__add
       AddPerson(@addPerson="addName" :people="people")
-      People(:people="people" ref="people" @deleteName="deletePerson")
+      People(:people="people" @deleteName="deletePerson")
     .button-pairs_container
       CustomButton(value='Hagamos parejas' @click.native='makePairs').button-pairs
+    Pairs(:pairs="pairs" ).home-container__pairs
 
-    Pairs.home-container__pairs
 </template>
 
 <script>
@@ -33,34 +33,46 @@ export default {
   },
   created() {
     this.showPeople();
+    this.showPairs();
+    this.getUserInfo();
   },
   data() {
 		return {
       people: [],
       pairs: [],
-      person: ""
+      person: "",
+      userId: ""
 		};
 	},
   methods: {
+    getUserInfo() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) this.userId = user.uid
+      });
+    },
     showPeople() {
       db.collection("people")
         .get()
         .then((querySnapshot) => {
           this.people = [];
           querySnapshot.forEach((person) => {
-            this.people.push({ name: person.data().name, id: person.id });
+            // console.log(person.data())
+            const dataPerson = person.data()
+            dataPerson.userSession === this.userId && this.people.push(dataPerson)
           });
         });
     },
     async addName(person) {
       try {
         if (person) {
-          console.log("addNAme")
-          let id = await db.collection("people").add({
+          const newPerson = {
             name: person,
-          });
-          this.people.push({ name: person, id: id.id });
-          person = null;
+            userSession: this.userId
+          }
+          let id = await db.collection("people").add(newPerson);
+          console.log("id", id)
+          this.people.push({...newPerson,id: id.id});
+
         } else {
           alert("Se te olvidó añadir a alguien");
         }
@@ -69,6 +81,7 @@ export default {
       }
     },
     deletePerson(personId) {
+      console.log(personId)
       db.collection("people")
         .doc(personId)
         .delete()
@@ -92,10 +105,46 @@ export default {
         .catch((error) => console.error(error));
     },
     makePairs() {
-      console.log()
-      for(this.person of this.people) {
-        console.log("pepe")
+      this.pairs = []
+      let evenArr = []
+      let oddArr = []
+      let aleatoryArr = [...this.people]
+
+      aleatoryArr = aleatoryArr.sort(() => { return 0.5 - Math.random() })
+      for(let [i, person] of aleatoryArr.entries()) {
+        if(i % 2 === 0) {
+          evenArr.push(person)
+        }
+        if (i % 2 !== 0) {
+          oddArr.push(person)
+        }
       }
+        console.log("even", evenArr)
+        console.log("odd", oddArr)
+
+      for(let [i, person] of evenArr.entries()){
+        console.log("i" , i , oddArr.length)
+        if(evenArr.length !== oddArr.length ) {
+          if (i === oddArr.length -1) {
+            this.pairs.push(`${person.name} - ${oddArr[i].name} - ${evenArr[evenArr.length -1].name}`)
+            return
+          } else {
+            this.pairs.push(`${person.name} - ${oddArr[i].name}`)
+          }
+        } else {
+          this.pairs.push(`${person.name} - ${oddArr[i].name}`)
+        }
+      }
+        console.log(this.pairs)
+    },
+    showPairs() {
+      db.collection("pairs")
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((pair) => {
+            this.pairs.push({ name: pair.data().name, id: pair.id });
+          });
+        });
     }
   }
 }

@@ -39,6 +39,7 @@ export default {
             this.user = user;
             console.log("user", user);
             this.$router.replace("home");
+            let userId = this.user.user.uid
           },
           error => console.error(error)
         );

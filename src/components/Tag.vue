@@ -1,4 +1,4 @@
-.<template lang="pug">
+<template lang="pug">
     .tag_container
         .title {{ name }}
         i(@click="$emit('deleteName')").material-icons close
