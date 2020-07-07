@@ -10,5 +10,6 @@
   position: relative;
   background-color: rgba(0, 0, 0, 0.4);
   min-height: 100%;
+  overflow-x: hidden;
 }
 </style>
