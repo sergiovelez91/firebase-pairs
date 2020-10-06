@@ -13,6 +13,8 @@ div
     .button-pairs_container
       CustomButton(value='Hagamos parejas' @click.native='makePairs').button-pairs
     Pairs(:pairs="pairs" ).home-container__pairs
+  
+  div(v-if="mmessageError") {{ mmessageError }}
 
 </template>
 
@@ -46,7 +48,9 @@ export default {
       person: "",
       userId: "",
       countDown: 3,
-      showCounter: false
+      showCounter: false,
+      dataPerson: {},
+      mmessageError: null
 		};
 	},
   methods: {
@@ -62,21 +66,25 @@ export default {
           this.people = [];
           querySnapshot.forEach((person) => {
             const dataPerson = person.data()
+            console.log(dataPerson.name)
             dataPerson.userSession === this.userId && this.people.push({...dataPerson, id: person.id})
           });
         });
     },
     async addName(person) {
       if (person) {
-        console.log(person)
+         for(let i = 0; i < this.people.length; i++) {
+          if(person === this.people[i].name) {
+            alert("Este usuario ya existe")
+            return 
+          } 
+        }
         const newPerson = {
           name: person,
           userSession: this.userId,
         }
-        
         let data = await db.collection("people").add(newPerson);
         this.people.push({...newPerson, id: data.id});
-
       } else {
         alert("Se te olvidó añadir a alguien");
       }  
@@ -105,35 +113,38 @@ export default {
         .catch((error) => console.error(error));
     },
     async makePairs() {
-      console.log("PAREJAS")
       this.pairs = []
       let evenArr = []
       let oddArr = []
       let aleatoryArr = [...this.people]
 
-      const count = await this.getCountDown()
-
-      aleatoryArr = aleatoryArr.sort(() => { return 0.5 - Math.random() })
-      for(let [i, person] of aleatoryArr.entries()) {
-        if(i % 2 === 0) {
-          evenArr.push(person)
+      if (this.people.length < 2) {
+        alert("Aun no existen personas")
+      } else {
+        const count = await this.getCountDown()
+  
+        aleatoryArr = aleatoryArr.sort(() => { return 0.5 - Math.random() })
+        for(let [i, person] of aleatoryArr.entries()) {
+          if(i % 2 === 0) {
+            evenArr.push(person)
+          }
+          if (i % 2 !== 0) {
+            oddArr.push(person)
+          }
         }
-        if (i % 2 !== 0) {
-          oddArr.push(person)
-        }
-      }
-
-      for(let [i, person] of evenArr.entries()){
-        console.log("i" , i , oddArr.length)
-        if(evenArr.length !== oddArr.length ) {
-          if (i === oddArr.length -1) {
-            this.pairs.push(`${person.name} - ${oddArr[i].name} - ${evenArr[evenArr.length -1].name}`)
-            return
+  
+        for(let [i, person] of evenArr.entries()){
+          console.log("i" , i , oddArr.length)
+          if(evenArr.length !== oddArr.length ) {
+            if (i === oddArr.length -1) {
+              this.pairs.push(`${person.name} - ${oddArr[i].name} - ${evenArr[evenArr.length -1].name}`)
+              return
+            } else {
+              this.pairs.push(`${person.name} - ${oddArr[i].name}`)
+            }
           } else {
             this.pairs.push(`${person.name} - ${oddArr[i].name}`)
           }
-        } else {
-          this.pairs.push(`${person.name} - ${oddArr[i].name}`)
         }
       }
         console.log(this.pairs)
